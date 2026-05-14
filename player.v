@@ -2,6 +2,7 @@ import time
 import os
 import regex
 import rand
+import math
 
 #flag -lmpv
 #include <mpv/client.h>
@@ -108,6 +109,24 @@ fn (p AudioPlayer) get_volume() f64 {
     vol := 0.0
     C.mpv_get_property(p.handle, 'volume'.str, mpv_format_double, &vol)
     return vol
+}
+
+fn (mut p AudioPlayer) thread_change_vol(vol f64) {
+  p.kill_thread = false
+  start_vol := p.target_volume
+  p.target_volume = vol
+  start_time := time.now()
+
+  for {
+    elapsed := time.since(start_time)
+    if elapsed >= p.ease_time || p.kill_thread { break }
+
+    ratio := (elapsed.seconds() / p.ease_time.seconds())
+    new_vol := ((p.target_volume-start_vol) * ratio)+start_vol
+    p.set_volume(new_vol)
+
+    time.sleep(10 * time.millisecond)
+  }
 }
 
 fn (mut p AudioPlayer) thread_change_song(mut songs []string) {

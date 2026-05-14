@@ -20,7 +20,7 @@ const commands := {
 		}
 	}
 	"pv" : fn (mut p AudioPlayer, args ...string){
-		p.set_volume(args[0].f64())
+		spawn p.thread_change_vol(args[0].f64())
 	}
 	"grad" : fn (mut p AudioPlayer, args ...string){
 		p.set_ease(args[0].int())
