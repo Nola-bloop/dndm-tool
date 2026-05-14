@@ -1,5 +1,6 @@
 #custom
 resources/
+.editorconfig
 
 # Binaries for programs and plugins
 main
