@@ -19,6 +19,9 @@ const commands := {
 			println('- ${s}')
 		}
 	}
+	"pv" : fn (mut p AudioPlayer, args ...string){
+		p.set_volume(args[0].f64())
+	}
 	"grad" : fn (mut p AudioPlayer, args ...string){
 		p.set_ease(args[0].int())
 	}
