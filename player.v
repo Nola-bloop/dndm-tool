@@ -2,7 +2,6 @@ import time
 import os
 import regex
 import rand
-import math
 
 #flag -lmpv
 #include <mpv/client.h>
