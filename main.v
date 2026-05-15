@@ -32,6 +32,13 @@ const commands := {
 			println(get_random_equipment())
 		}
 	}
+	"char" : fn (mut p AudioPlayer, args ...string){
+    if args.len < 1 { println(get_character()) return }
+
+  	for _ in 0 .. args[0].int(){
+  		println(get_character())
+  	}
+	}
 }
 
 fn main() {
