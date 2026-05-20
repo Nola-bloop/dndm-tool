@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>dndm-tool UI</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div class="block">
+            <h2>I N I T I A T I V E</h2>
+            <div id="initiative-block"></div>
+            <div class="row">
+                <input type="text" name="name" value="" id="i-name" />
+                <input type="number" name="name" value="" id="i-roll" />
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 640 640"
+                    onclick="addInitiative()"
+                >
+                    <!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+                    <path
+                        d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"
+                    />
+                </svg>
+            </div>
+            <div
+                class="row clickable-row"
+                id="turn-tracker"
+                onclick="nextTurn()"
+            >
+                Turn tracker...
+            </div>
+        </div>
+        <div class="block">
+            <h2>H E A L T H</h2>
+            <div id="health-block"></div>
+            <div class="row">
+                <input type="text" name="name" value="" id="h-name" />
+                <input type="number" name="name" value="" id="h-val" />
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 640 640"
+                    onclick="addHealth()"
+                >
+                    <!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+                    <path
+                        d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"
+                    />
+                </svg>
+            </div>
+        </div>
+    </body>
+    <style>
+        * {
+            font-family: "Ubuntu", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        body {
+            display: flex;
+            justify-content: space-between;
+        }
+        .block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        svg {
+            width: 20px;
+            cursor: pointer;
+            border-left: 1px solid black;
+
+            transition: all;
+            transition-duration: 250ms;
+        }
+        svg:hover {
+            border-left: 4px solid black;
+        }
+        .row {
+            width: 40vw;
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1vh;
+            margin-bottom: 1vh;
+        }
+        .row-clustered {
+            width: 40vw;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        .clickable-row {
+            cursor: pointer;
+            border-bottom: 0px solid black;
+
+            transition: all;
+            transition-duration: 250ms;
+            * {
+                user-select: none;
+            }
+        }
+        .clickable-row:hover {
+            border-bottom: 3px solid black;
+        }
+        .initiative-roll {
+            margin-right: 1vw;
+        }
+        p {
+            margin: 0;
+        }
+    </style>
+    <script>
+        const initiative_block = document.getElementById("initiative-block");
+        const health_block = document.getElementById("health-block");
+        const turn_tracker = document.getElementById("turn-tracker");
+
+        let initiative = [];
+        let turn = 0;
+
+        let health = [];
+
+        function addInitiative() {
+            initiative.push({
+                name: document.getElementById("i-name").value,
+                value: Number(document.getElementById("i-roll").value),
+            });
+            refreshInitiative();
+        }
+
+        function refreshInitiative() {
+            initiative.sort((a, b) => a.value < b.value);
+            initiative_block.innerHTML = "";
+
+            initiative.forEach((i) => {
+                initiative_block.innerHTML += `
+                <div class="row-clustered clickable-row" onclick="deleteInitiative('${i.name}')">
+                  <p class="initiative-roll">[${i.value}]</p>
+                  <p>${i.name}</p>
+                </div>
+                `;
+            });
+
+            turn_tracker.innerText = `Current turn: ${initiative[turn]?.name ?? "none"}.`;
+        }
+        function deleteInitiative(name) {
+            initiative = initiative.filter((i) => i.name !== name);
+            refreshInitiative();
+        }
+        function nextTurn() {
+            turn++;
+            if (turn > initiative.length - 1) {
+                turn = 0;
+            }
+            refreshInitiative();
+        }
+
+        function addHealth() {
+            health.push({
+                name: document.getElementById("h-name").value,
+                value: Number(document.getElementById("h-val").value),
+            });
+            refreshHealth();
+        }
+        function refreshHealth() {
+            health.sort((a, b) => a.name < b.name);
+            health_block.innerHTML = "";
+
+            health.forEach((h) => {
+                health_block.innerHTML += `
+                <div class="row">
+                  <p onclick="deleteHealth('${h.name}')" class="clickable-row">${h.name}</p>
+                  <p>:</p>
+                  <input type="number" name="name" value="${h.value}">
+                </div>
+                `;
+            });
+        }
+        function deleteHealth(name) {
+            health = health.filter((h) => h.name !== name);
+            refreshHealth();
+        }
+    </script>
+</html>
