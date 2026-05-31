@@ -169,7 +169,19 @@
             refreshHealth();
         }
         function refreshHealth() {
-            health.sort((a, b) => a.name < b.name);
+            console.log("refresh health...");
+            health.sort((a, b) => a.name > b.name);
+
+            health_elements = document.getElementsByClassName("health-input");
+
+            console.log(health_elements);
+
+            health.forEach((h) => {
+                if (health_elements[h.name]) {
+                    h.value = health_elements[h.name].value;
+                }
+            });
+
             health_block.innerHTML = "";
 
             health.forEach((h) => {
@@ -177,7 +189,7 @@
                 <div class="row">
                   <p onclick="deleteHealth('${h.name}')" class="clickable-row">${h.name}</p>
                   <p>:</p>
-                  <input type="number" name="name" value="${h.value}">
+                  <input type="number" name="${h.name}" value="${h.value}" class="health-input ${h.name}">
                 </div>
                 `;
             });
